@@ -70,7 +70,7 @@ def get_loudest_sub(v, r, NL, subs):
 
 def get_quietest_sub(v, r, NL, subs):
   best_snr = float('inf')
-  loudest_sub = None
+  quietest_sub = None
 
   for sub in subs:
     snr = get_signal_to_noise_ratio(v, r, NL, sub)
@@ -101,17 +101,17 @@ def get_snr_for_range_of_distances(v, r, NL, sub, intervals):
 
   plt.figure(figsize=(20, 10))
   plt.plot(distances, snrs, label=sub.name, linewidth=2, color='navy')
-  plt.xlabel=('Distance (m)')
-  plt.ylabel=('SNR (dB)')
+  plt.xlabel('Distance (m)')
+  plt.ylabel('SNR (dB)')
   plt.title(f'SNR vs. Distance for {sub.name}-Class Submarine at {v} knots')
   plt.grid(True)
   plt.legend()
   plt.show()
 
 def add_common_arguments(subparser):
-    subparser.add_argument('--v', type=float, required=True, help='Speed in knots')
-    subparser.add_argument('--r', type=float, required=True, help='Distance in meters')
-    subparser.add_argument('--NL', type=float, required=True, help='Ambient noise level in dB')
+  subparser.add_argument('--v', type=float, required=True, help='Speed in knots')
+  subparser.add_argument('--r', type=float, required=True, help='Distance in meters')
+  subparser.add_argument('--NL', type=float, required=True, help='Ambient noise level in dB')
 
 def main():
   parser = argparse.ArgumentParser(description="Submarine SNR Simulator")
@@ -130,7 +130,8 @@ def main():
 
   parser_snr_distance = subparsers.add_parser('snr-distance', help='Plot SNR vs distance for a given submarine')
   add_common_arguments(parser_snr_distance)
-  parser_snr_distance.add_argument('--sub', type=float, required=True, help='Submarine class name (e.g. Ohio)')
+  parser_snr_distance.add_argument('--sub', type=str, required=True, help='Submarine class name (e.g. Ohio)')
+  parser_snr_distance.add_argument('--intervals', type=int, required=True, help='Number of intervals between 1 and selected distance (r)')
 
   args = parser.parse_args()
 
