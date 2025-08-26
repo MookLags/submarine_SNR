@@ -8,14 +8,14 @@ v0 is the knots after which cavitation will increase audibility
 n is the noise scaling component
 '''
 
-ohio = System(L0=100, v0=21, n=2.5, p=2.5, A=0.3125) # max submerged speed of 25 knots
-lafayette = System(L0=103, v0=8, n=2.8, p=2.5, A=0.074) # max submerged speed of 21 knots
-seawolf = System(L0=94, v0=20, n=2.3, p=2.5, A=0.1) # max submerged speed of ~30+ knots
-los_angeles = System(L0=98, v0=13, n=2.5, p=2.5, A=0.15) # max submerged speed of ~30 knots
+ohio = System(name='Ohio', L0=100, v0=21, n=2.5, p=2.5, A=0.3125) # max submerged speed of 25 knots
+lafayette = System(name='Lafeyette', L0=103, v0=8, n=2.8, p=2.5, A=0.074) # max submerged speed of 21 knots
+seawolf = System(name='Seawolf', L0=94, v0=20, n=2.3, p=2.5, A=0.1) # max submerged speed of ~30+ knots
+los_angeles = System(name='Los Angeles', L0=98, v0=13, n=2.5, p=2.5, A=0.15) # max submerged speed of ~30 knots
+typhoon = System(name='Typhoon', L0=110, v0=7, n=3.0, p=2.5, A=0.15) # noisy Russian boomer!
+red_october = System(name='Red October', L0=85, v0=15, n=1.5, p=2.5, A=0.05) # typhoon class sub, magnetohydrodynamic drive enabled
 
-L0 = 100 
-v0 = 8 
-n = 2.5 # noise scaling component. Assumed to be between 2 and 3 given an estimated max noise output of 110-120
+subs = [ohio, lafayette, seawolf, los_angeles, typhoon, red_october]
 
 def dLcav(v, system): 
   '''
@@ -46,6 +46,31 @@ def get_signal_to_noise_ratio(v, r, NL, system):
   # NL = ambient noise level
   return get_noise_level(v, system) - get_transmission_loss(r) - NL
 
-print('Noise level: ', get_noise_level(21, seawolf))
-print('Transmission loss: ', get_transmission_loss(10000))
-print('SNR: ', get_signal_to_noise_ratio(21, 1000, 50, seawolf))
+### SIMULATIONS ###
+
+def get_loudest_sub(v, r, NL, subs):
+  best_snr = float('-inf')
+  loudest_sub = None
+
+  for sub in subs:
+    snr = get_signal_to_noise_ratio(v, r, NL, sub)
+    if snr > best_snr:
+      best_snr = snr
+      loudest_sub = sub.name
+
+  return loudest_sub, best_snr
+
+def get_quietest_sub(v, r, NL, subs):
+  best_snr = float('inf')
+  loudest_sub = None
+
+  for sub in subs:
+    snr = get_signal_to_noise_ratio(v, r, NL, sub)
+    if snr < best_snr:
+      best_snr = snr
+      quietest_sub = sub.name
+
+  return quietest_sub, best_snr
+
+def get_snr_for_range_of_distances(v, r, NL, system):
+  pass
