@@ -8,17 +8,18 @@ v0 is the knots after which cavitation will increase audibility
 n is the noise scaling component
 '''
 
-ohio = System(L0=100, v0=21, n=2.5, p = 2.5, A = 0.3125)
+ohio = System(L0=100, v0=21, n=2.5, p=2.5, A=0.3125) # max submerged speed of 25 knots
+lafayette = System(L0=103, v0=8, n=2.8, p=2.5, A=0.074) # max submerged speed of 21 knots
 
-L0 = 100 # estimated 'resting' noise level of Ohio class sub (or similar) before audibility of cavitation in dB
-v0 = 21 # knots after which cavitation will increase audibility (i.e. maximum cruise speed at L0db
-n = 2.5 # noise scaling component. Assumed to be between 2 and 3 given an estimated max noise output of 110
+L0 = 100 
+v0 = 8 
+n = 2.5 # noise scaling component. Assumed to be between 2 and 3 given an estimated max noise output of 110-120
 
 def dLcav(v, system): 
   '''
   Solving A * (v - 25)** p where A is the cavitation scaling factor and p is the cavitation noise growth rate.
 
-  A = 10 / (4**p)
+  A = 10 / ((v-v0)**p)
   Smaller values of p lead to more linear increases which are not necessarily accurate given dB are logarithmic.
   '''
   if v <= system.v0: # Below cavitation threshold
@@ -28,7 +29,7 @@ def dLcav(v, system):
 
 def get_noise_level(v, system):
   x = 1 + (v / system.v0)**system.n
-  return system.L0 + 10 * (np.log(x) / np.log(10)) + dLcav(v)
+  return system.L0 + 10 * (np.log(x) / np.log(10)) + dLcav(v, system)
 
 def get_transmission_loss(r): 
   '''
@@ -43,6 +44,6 @@ def get_signal_to_noise_ratio(v, r, NL, system):
   # NL = ambient noise level
   return get_noise_level(v, system) - get_transmission_loss(r) - NL
 
-print('Noise level: ', get_noise_level(22, ohio))
-print('Transmission loss: ', get_transmission_loss(100))
-print('SNR: ', get_signal_to_noise_ratio(22, 1000, 50, ohio))
+print('Noise level: ', get_noise_level(21, lafayette))
+print('Transmission loss: ', get_transmission_loss(10000))
+print('SNR: ', get_signal_to_noise_ratio(21, 10000, 50, lafayette))
