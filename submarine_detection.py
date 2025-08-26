@@ -10,17 +10,19 @@ n is the noise scaling component
 A is an estimated difference in dB from dB at max speed and dB at speed of cavitation threshold
 '''
 
-ohio = System(name='Ohio', L0=100, v0=21, n=2.5, p=2.5, A=0.3125) # max submerged speed of 25 knots
-lafayette = System(name='Lafeyette', L0=103, v0=8, n=2.8, p=2.5, A=0.074) # max submerged speed of 21 knots
-seawolf = System(name='Seawolf', L0=94, v0=20, n=2.3, p=2.5, A=0.1) # max submerged speed of ~30+ knots
-los_angeles = System(name='Los Angeles', L0=98, v0=13, n=2.5, p=2.5, A=0.15) # max submerged speed of ~30 knots
-typhoon = System(name='Typhoon', L0=110, v0=7, n=3.0, p=2.5, A=0.15) # max submerged speed of 28 knots
-red_october = System(name='Red October', L0=85, v0=15, n=1.5, p=2.5, A=0.05) # typhoon class sub, magnetohydrodynamic drive enabled
+ohio = System(name='Ohio', L0=100, v0=21, n=2.5, p=2.5, A=0.3125, ms=25) # max submerged speed of 25 knots
+lafayette = System(name='Lafeyette', L0=103, v0=8, n=2.8, p=2.5, A=0.074, ms=21) # max submerged speed of 21 knots
+seawolf = System(name='Seawolf', L0=94, v0=20, n=2.3, p=2.5, A=0.1, ms=30) # max submerged speed of ~30+ knots
+los_angeles = System(name='Los Angeles', L0=98, v0=13, n=2.5, p=2.5, A=0.15, ms=30) # max submerged speed of ~30 knots
+typhoon = System(name='Typhoon', L0=110, v0=7, n=3.0, p=2.5, A=0.15, ms=28) # max submerged speed of 28 knots
+red_october = System(name='Red October', L0=85, v0=15, n=1.5, p=2.5, A=0.05, ms=28) # typhoon class sub, magnetohydrodynamic drive enabled
 
 subs = [ohio, lafayette, seawolf, los_angeles, typhoon, red_october]
 
-def get_sub_specs(subs):
+def print_sub_specs(subs):
   # list the sub's name, max speed, and cavitation threshold each on a separate line
+  for sub in subs:
+    print(f'{sub.name}\nMax Submerged Speed: {sub.ms} knots\nCavitation Threshold: Roughly {sub.L0} dB at {sub.v0} knots\n')
   pass
 
 def dLcav(v, system): 
@@ -115,6 +117,8 @@ def main():
   parser = argparse.ArgumentParser(description="Submarine SNR Simulator")
   subparsers = parser.add_subparsers(dest='command', help='Available commands')
 
+  parser_print_subs = subparsers.add_parser('ls', help='List some useful information about documented submarines.')
+
   parser_compare = subparsers.add_parser('compare-snr', help='Compare SNR for all submarines at a given speed and distance')
   add_common_arguments(parser_compare)
 
@@ -130,7 +134,10 @@ def main():
 
   args = parser.parse_args()
 
-  if args.command == 'compare-snr':
+  if args.command == 'ls':
+    print_sub_specs(subs)
+
+  elif args.command == 'compare-snr':
     compare_sub_snr_at_v(args.v, args.r, args.NL, subs)
 
   elif args.command == 'loudest-sub':
