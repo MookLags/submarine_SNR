@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from modsim import *
+import argparse
 
 '''
 L0 is the 'resting' noise level of each class submarine before audibility of cavitation in dB is added to overall noise level
@@ -17,6 +18,10 @@ typhoon = System(name='Typhoon', L0=110, v0=7, n=3.0, p=2.5, A=0.15) # max subme
 red_october = System(name='Red October', L0=85, v0=15, n=1.5, p=2.5, A=0.05) # typhoon class sub, magnetohydrodynamic drive enabled
 
 subs = [ohio, lafayette, seawolf, los_angeles, typhoon, red_october]
+
+def get_sub_specs(subs):
+  # list the sub's name, max speed, and cavitation threshold each on a separate line
+  pass
 
 def dLcav(v, system): 
   '''
@@ -101,8 +106,50 @@ def get_snr_for_range_of_distances(v, r, NL, sub, intervals):
   plt.legend()
   plt.show()
 
+def add_common_arguments(subparser):
+    subparser.add_argument('--v', type=float, required=True, help='Speed in knots')
+    subparser.add_argument('--r', type=float, required=True, help='Distance in meters')
+    subparser.add_argument('--NL', type=float, required=True, help='Ambient noise level in dB')
+
 def main():
-  pass
+  parser = argparse.ArgumentParser(description="Submarine SNR Simulator")
+  subparsers = parser.add_subparsers(dest='command', help='Available commands')
+
+  parser_compare = subparsers.add_parser('compare-snr', help='Compare SNR for all submarines at a given speed and distance')
+  add_common_arguments(parser_compare)
+
+  parser_quietest = subparsers.add_parser('quietest-sub', help='Get quietest submarine at given speed and distance')
+  add_common_arguments(parser_quietest)
+
+  parser_loudest = subparsers.add_parser('loudest-sub', help='Get loudest submarine at given speed and distance')
+  add_common_arguments(parser_loudest)
+
+  parser_snr_distance = subparsers.add_parser('snr-distance', help='Plot SNR vs distance for a given submarine')
+  add_common_arguments(parser_snr_distance)
+  parser_snr_distance.add_argument('--sub', type=float, required=True, help='Submarine class name (e.g. Ohio)')
+
+  args = parser.parse_args()
+
+  if args.command == 'compare-snr':
+    compare_sub_snr_at_v(args.v, args.r, args.NL, subs)
+
+  elif args.command == 'loudest-sub':
+    sub, snr = get_loudest_sub(args.v, args.r, args.NL, subs)
+    print(f'Loudest Submarine: {sub} with SNR = {snr:.2f} dB')
+
+  elif args.command == 'quietest-sub':
+    sub, snr = get_quietest_sub(args.v, args.r, args.NL, subs)
+    print(f'Quietest Submarine: {sub} with SNR = {snr:.2f} dB')
+
+  elif args.command == 'snr-vs-distance':
+    selected_sub = next((s for s in subs if s.name.lower() == args.sub.lower()), None)
+    if selected_sub is None:
+      print(f'Submarine "{args.sub}" not found. Available subs: {[s.name for s in subs]}')
+      return
+    get_snr_for_range_of_distances(args.v, args.r, args.NL, selected_sub, args.intervals)
+
+  else:
+    parser.print_help()
 
 if __name__ == '__main__':
   main()
