@@ -102,12 +102,7 @@ def get_snr_for_range_of_distances(v, r, NL, sub, intervals):
   plt.show()
 
 def main():
-  print('\n\n\n==================================SUB SNR===================================\n\n\n')
-  print('This program models different classes of submarines for SNR (signal to noise ratio) simulations.\n')
-  print('To see this iteration\'s sub data by class, type the key associated with its name and press enter. Press h for a list of options\n')
-  print('Ohio (o)\nLafayette (l)\nSeaworlf (s)\nLos Angeles (la)\nTyphoon (t)\nRed October (r)')
-  while True:
-    hi = input()
+  pass
 
 if __name__ == '__main__':
   main()
