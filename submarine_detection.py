@@ -10,6 +10,8 @@ n is the noise scaling component
 
 ohio = System(L0=100, v0=21, n=2.5, p=2.5, A=0.3125) # max submerged speed of 25 knots
 lafayette = System(L0=103, v0=8, n=2.8, p=2.5, A=0.074) # max submerged speed of 21 knots
+seawolf = System(L0=94, v0=20, n=2.3, p=2.5, A=0.1) # max submerged speed of ~30+ knots
+los_angeles = System(L0=98, v0=13, n=2.5, p=2.5, A=0.15) # max submerged speed of ~30 knots
 
 L0 = 100 
 v0 = 8 
@@ -44,6 +46,6 @@ def get_signal_to_noise_ratio(v, r, NL, system):
   # NL = ambient noise level
   return get_noise_level(v, system) - get_transmission_loss(r) - NL
 
-print('Noise level: ', get_noise_level(21, lafayette))
+print('Noise level: ', get_noise_level(21, seawolf))
 print('Transmission loss: ', get_transmission_loss(10000))
-print('SNR: ', get_signal_to_noise_ratio(21, 10000, 50, lafayette))
+print('SNR: ', get_signal_to_noise_ratio(21, 1000, 50, seawolf))
