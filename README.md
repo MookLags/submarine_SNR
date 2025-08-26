@@ -155,7 +155,7 @@ pip install numpy matplotlib
 
 Clone the repository
 ```bash
-git clone (https://github.com/MookLags/submarine_SNR.git)
+git clone https://github.com/MookLags/submarine_SNR.git
 cd submarine-SNR
 ```
 Run the simulation:
