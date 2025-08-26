@@ -100,19 +100,19 @@ def get_signal_to_noise_ratio(v, r):
 - The speed of sound in water is constant.
 - Submarine noise emissions are omnidirectional.
 - Absorption and spreading loss are uniform over range.
-- Ambient noise is manually specified and not calculated from environmental data.
-- Cavitation begins at 21 knots and follows a polynomial growth pattern thereafter.
-- Only Ohio-class submarine acoustic characteristics are modeled in the current version.
+- ~~Ambient noise is manually specified and not calculated from environmental data.~~
+- ~~Cavitation begins at 21 knots and follows a polynomial growth pattern thereafter.~~
+- ~~Only Ohio-class submarine acoustic characteristics are modeled in the current version.~~
 
 ---
 
 ## Current Limitations
 
 - Does not account for multipath propagation, thermoclines, or sea floor reflections.
-- Ambient noise is static and not modeled per frequency band or source.
+- ~~Ambient noise is static and not modeled per frequency band or source.~~
 - Cavitation noise is estimated, not based on empirical measurements.
 - No probabilistic detection model is yet implemented.
-- Does not support multiple submarine profiles or dynamic inputs.
+- ~~Does not support multiple submarine profiles or dynamic inputs.~~
 
 ---
 
