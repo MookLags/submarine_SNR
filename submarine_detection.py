@@ -73,6 +73,21 @@ def get_quietest_sub(v, r, NL, subs):
 
   return quietest_sub, best_snr
 
+def compare_sub_snr_at_v(v, r, NL, subs):
+  res = {sub.name: get_signal_to_noise_ratio(v, r, NL, sub) for sub in subs}
+
+  names = list(res.keys())
+  snrs = list(res.values())
+  
+  fig, ax = plt.subplots()
+
+  ax.bar(names, snrs, color='navy')
+  ax.set_ylabel('SNR (dB)')
+  ax.set_xlabel('Submarine Class')
+  ax.set_title(f'SNR for each submarine at {v} knots and {r}m distance\n(Ambient noise = {NL})')
+  
+  plt.show()
+
 def get_snr_for_range_of_distances(v, r, NL, sub, intervals):
   distances = np.linspace(1, r, intervals)
   snrs = [get_signal_to_noise_ratio(v, d, NL, sub) for d in distances]
@@ -86,4 +101,5 @@ def get_snr_for_range_of_distances(v, r, NL, sub, intervals):
   plt.legend()
   plt.show()
 
-print(get_snr_for_range_of_distances(25, 1000, 65, red_october, 1000))
+#print(get_snr_for_range_of_distances(25, 1000, 65, red_october, 1000))
+print(compare_sub_snr_at_v(18, 1000, 60, subs))
