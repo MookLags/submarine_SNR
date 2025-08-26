@@ -1,5 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from modsim import *
+
+'''
+L0 is the 'resting' noise level of each class submarine before audibility of cavitation in dB is added to overall noise level
+v0 is the knots after which cavitation will increase audibility
+n is the noise scaling component
+'''
+
+ohio = System(L0=100, v0=21, n=2.5)
 
 L0 = 100 # estimated 'resting' noise level of Ohio class sub (or similar) before audibility of cavitation in dB
 v0 = 21 # knots after which cavitation will increase audibility (i.e. maximum cruise speed at L0db
@@ -20,22 +29,22 @@ def dLcav(v):
   else:
     return 0.3125 * (v - v0)**2.5
 
-def get_noise_level(v):
-  x = 1 + (v / v0)**n
-  return L0 + 10 * (np.log(x) / np.log(10)) + dLcav(v)
+def get_noise_level(v, system):
+  x = 1 + (v / system.v0)**system.n
+  return system.L0 + 10 * (np.log(x) / np.log(10)) + dLcav(v)
 
 def get_transmission_loss(r): 
   '''
   r = distance
-  alpha = Rate at which dB dissipates as it travels through a medium over time (0.04 dB/s is a good rate for seawater)
+  alpha = Rate at which dB dissipates as it travels through a medium (0.04 dB/km is a good rate for seawater)
   '''
   alpha = 0.00004
   return 20 * (np.log(r) / np.log(10)) + alpha * r
 
-def get_signal_to_noise_ratio(v, r, NL):
-  # Ambient noise level (assumed NL of 80dB--fine for some noisy or shallow seas)
-  return get_noise_level(v) - get_transmission_loss(r) - NL
+def get_signal_to_noise_ratio(v, r, NL, system):
+  # NL = ambient noise level
+  return get_noise_level(v, system) - get_transmission_loss(r) - NL
 
-print('Noise level: ', get_noise_level(22))
+print('Noise level: ', get_noise_level(22, ohio))
 print('Transmission loss: ', get_transmission_loss(100))
-print('SNR: ', get_signal_to_noise_ratio(22, 1000, 50))
+print('SNR: ', get_signal_to_noise_ratio(22, 1000, 50, ohio))
