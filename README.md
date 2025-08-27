@@ -2,9 +2,58 @@
 
 ## Overview
 
-This simulation models the probability of detecting a submerged submarine using passive sonar systems. It estimates the acoustic signal strength of a submarine based on its speed, models transmission loss over distance, accounts for ambient noise, and calculates signal-to-noise ratio (SNR) at a given listener position. It is designed as a foundational tool for analyzing passive acoustic detection likelihood in controlled operational environments.
+This is a simple CLI tool created for fun. It contains a suite of functions which run simulations on estimated specifications of US and Russian military submarines. Of the many limitations of this tool (see **Limitations** and **Assumptions** below), the most important to note and obvious to surmise is that of the available knowledge--or lack thereof--regarding these specifications. Most of the information necessary to collect the most accurate results of these simulations (i.e. cavitation threshold among others) is classified and inaccessible.
 
-The current implementation models the Ohio-class submarine. Other submarine classes and refinements will be added in future versions.
+Therefore, many assumptions were made regarding base noise levels of submarines, cavitation thresholds, etc. Reasonable estimates were made based off of such information as the commonly sited stat that the Ohio cruises as quietly at 20 knots as the Lafayette at 6, and my own working knowledge of submarines, sound, and physics.
+
+## Installation
+### Requirements
+
+- Python 3.7+
+- NumPy
+- Matplotlib (optional, for future graphing)
+- Modsim (included in repo)
+
+### Install dependencies:
+```bash
+pip install numpy matplotlib
+```
+
+Clone the repository
+```bash
+git clone https://github.com/MookLags/submarine_SNR.git
+cd submarine-SNR
+```
+
+### Running the Program
+As the program is still in early development, names of arguments are subject to change. To get the most up-to-date list of options of possible arguments in the terminal, you can ask for help:
+```bash
+python3 submarine_detection.py -h
+```
+
+which currently lists the following:
+```bash
+usage: submarine_detection.py [-h]
+                              {ls,compare-snr,quietest-sub,loudest-sub,snr-distance}
+                              ...
+
+Submarine SNR Simulator
+
+positional arguments:
+  {ls,compare-snr,quietest-sub,loudest-sub,snr-distance}
+                        Available commands
+    ls                  List some useful information about documented
+                        submarines.
+    compare-snr         Compare SNR for all submarines at a given speed and
+                        distance
+    quietest-sub        Get quietest submarine at given speed and distance
+    loudest-sub         Get loudest submarine at given speed and distance
+    snr-distance        Plot SNR vs distance for a given submarine
+
+options:
+  -h, --help            show this help message and exit
+```
+I am currently focusing on developing new simulations and adding more parameters to existing functions to account for depth and temperature of water, customized/theoretical submarine specifications, and testing among others. See **Planned Enhancements** below.
 
 ---
 
@@ -140,39 +189,6 @@ Where:
 
 ---
 
-## Installation
-### Requirements
-
-- Python 3.7+
-- NumPy
-- Matplotlib (optional, for future graphing)
-
-### Install dependencies:
-```bash
-pip install numpy matplotlib
-```
-### Running the Program
-
-Clone the repository
-```bash
-git clone https://github.com/MookLags/submarine_SNR.git
-cd submarine-SNR
-```
-Run the simulation:
-```bash
-python3 submarine_detection.py
-```
-The script will output the submarine's noise level, transmission loss, and SNR for given inputs.
-
----
-## Example Output:
-```bash
-Noise level:         103.58 dB
-Transmission loss:    60.04 dB
-SNR:                 -6.45 dB
-```
-
----
 
 ## Contributing
 
